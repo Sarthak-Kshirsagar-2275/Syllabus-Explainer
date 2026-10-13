@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Turn confusing university lecture topics into clear, memorable explanations." />
+    <title>Syllabus Explainer — Learn it clearly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script defer src="./js/app.js"></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="Syllabus Explainer home">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span>Syllabus <em>Explainer</em></span>
+        </a>
+        <div class="header-note"><span class="status-dot"></span> Your study companion</div>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <p class="eyebrow">Make difficult ideas click</p>
+          <h1 id="page-title">Understand your syllabus,<br /><span>one idea at a time.</span></h1>
+          <p class="hero-copy">Paste a lecture topic, paragraph, or question below. Get a clear, friendly explanation you can actually remember.</p>
+        </section>
+
+        <section class="workspace" aria-label="Explanation workspace">
+          <div class="input-card card">
+            <div class="card-heading">
+              <div>
+                <p class="section-label">01 <span>Input</span></p>
+                <h2>What are you stuck on?</h2>
+              </div>
+              <span class="shortcut">Tip: be as specific as possible</span>
+            </div>
+            <label class="sr-only" for="topic-input">Lecture topic or passage</label>
+            <textarea id="topic-input" maxlength="12000" placeholder="For example: Explain the difference between mitosis and meiosis…" spellcheck="true"></textarea>
+            <div class="input-footer">
+              <span id="character-count">0 / 12,000</span>
+              <button id="explain-button" class="primary-button" type="button">
+                <span class="button-label">Explain this</span>
+                <span class="button-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="result-card card" aria-live="polite">
+            <div class="card-heading result-heading">
+              <div>
+                <p class="section-label">02 <span>Clarity</span></p>
+                <h2>Here’s the simple version</h2>
+              </div>
+              <button id="copy-button" class="copy-button" type="button" hidden>Copy answer</button>
+            </div>
+            <div id="result-content" class="result-content empty-state">
+              <div class="empty-icon" aria-hidden="true">◌</div>
+              <p>Your explanation will appear here.</p>
+              <span>Start by adding a topic above.</span>
+            </div>
+          </div>
+        </section>
+
+        <p id="error-message" class="error-message" role="alert" hidden></p>
+      </main>
+
+      <footer class="site-footer">
+        <span>Built for curious minds.</span>
+        <span>Keep learning, keep asking.</span>
+      </footer>
+    </div>
+  </body>
+</html>
