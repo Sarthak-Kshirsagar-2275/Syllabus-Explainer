@@ -88,6 +88,10 @@ app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Syllabus Explainer API listening on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Syllabus Explainer API listening on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
