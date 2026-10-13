@@ -1,4 +1,4 @@
-const API_URL = '[https://syllabus-explainer-backend.vercel.app/api/explain](https://syllabus-explainer-backend.vercel.app/api/explain)';
+const API_URL = 'https://syllabus-explainer-backend.vercel.app/api/explain';
 const input = document.querySelector('#topic-input');
 const explainButton = document.querySelector('#explain-button');
 const resultContent = document.querySelector('#result-content');
