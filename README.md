@@ -1,67 +1,44 @@
 # Syllabus Explainer
 
-A clean, student-friendly web app that turns confusing lecture topics into clear explanations using the Gemini API.
+A full stack educational application designed to break down complex university lecture topics into clear and memorable explanations.
 
-## Project structure
+## Architecture Overview
 
-```text
-syllabus-explainer/
-├── backend/
-│   ├── .env                 
-│   ├── .gitignore
-│   ├── package.json
-│   └── server.js
-└── frontend/
-    ├── index.html
-    ├── css/style.css
-    └── js/app.js
-```
+The system utilizes a modern serverless pipeline for high availability and low latency.
 
-## Setup and run
+1. Frontend Interface
+Built with vanilla JavaScript and deployed on Vercel. Features a responsive UI and dynamic WebGL rendering using Three.js to provide spatial context to explanations.
 
-Requires Node.js 18+.
+2. Backend API
+An Express server deployed on Vercel Serverless Functions. Handles prompt engineering, payload validation, and data routing.
 
-```bash
-cd syllabus-explainer/backend
-npm install
-npm run dev
-```
+3. AI Integration
+Powered by the Groq API. The pipeline forces strict JSON schema generation to categorize topics into spatial dimensions for the rendering engine.
 
-In a second terminal, serve the frontend from its own directory:
+4. Distributed Caching
+Integrates Upstash Redis as an in memory caching layer. Drastically reduces network latency and API usage by serving repeated queries instantly.
 
-```bash
-cd syllabus-explainer/frontend
-npx serve -l 5500
-```
+## Technical Highlights
 
-Open <http://localhost:5500>.
++ Structured Data Pipelines
+The backend bypasses flat text generation by forcing the LLM to output rigid JSON. This allows the frontend to dynamically mount specific WebGL geometries based on the spatial classification of the topic.
 
-If you prefer Python for the static frontend server:
++ Memory Management
+The Three.js rendering loop includes aggressive garbage collection and canvas disposal to prevent memory leaks during client sessions.
 
-```bash
-cd syllabus-explainer/frontend
-python3 -m http.server 5500
-```
++ Serverless Optimization
+Bypasses cold start latency issues and redundant API costs through a globally distributed Redis cache.
 
-## Security notes
+## Getting Started
 
-- The browser only calls `http://localhost:8080/api/explain`.
-- The Gemini API key is read by the Node.js backend from `backend/.env` and never sent to the browser.
-- `backend/.env` is ignored by Git. Keep it private and use `.env.example` when sharing configuration.
-- The backend validates the input length and returns user-friendly errors.
+To run this project locally you will need Node.js and API keys for Groq and Upstash Redis.
 
-## API
+1. Clone the repository
+2. Navigate to the backend directory
+3. Create a .env file with your API credentials
+4. Run npm install followed by npm run dev
+5. Serve the frontend folder using a local web server
 
-`POST /api/explain`
+## Development Trajectory
 
-```json
-{ "text": "Explain photosynthesis" }
-```
-
-Response:
-
-```json
-{ "explanation": "..." }
-```
-
-`GET /api/health` returns server and Gemini configuration status without revealing the API key.
+This project serves as a foundational architecture bridge transitioning from standard web environments to spatial computing. Future development focuses entirely on C++ hardware integration and memory management for XR engines.
