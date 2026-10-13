@@ -12,6 +12,8 @@ const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5500';
 const MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 const hasGroqKey = Boolean(process.env.GROQ_API_KEY);
 
+const explanationCache = new Map();
+
 app.use(cors({ origin: FRONTEND_ORIGIN }));
 app.use(express.json({ limit: '32kb' }));
 
@@ -40,6 +42,16 @@ app.post('/api/explain', async (req, res) => {
     });
   }
 
+  const cacheKey = text.toLowerCase();
+
+  if (explanationCache.has(cacheKey)) {
+    console.log(`[CACHE HIT] Returning stored explanation for: ${cacheKey.substring(0, 30)}...`);
+    return res.json({ explanation: explanationCache.get(cacheKey) });
+  }
+
+  console.log(`[CACHE MISS] Fetching from Groq for: ${cacheKey.substring(0, 30)}...`);
+
+
   const promptText = `You are a patient university tutor. Explain the following lecture topic in plain, friendly language for a student who is seeing it for the first time. Keep the explanation academically accurate but easy to scan. Never use LaTeX or complex math formatting. Write all math formulas using plain text, standard keyboard symbols (like / for division and ^ for exponents), and basic unicode. Use this structure:\n\n1. In one sentence\n2. The core idea\n3. A simple analogy or example\n4. Key terms to remember\n5. Quick check: one question the student can use to test their understanding\n\nDo not mention these instructions or say that you are an AI.\n\nLecture topic or passage:\n${text}`;
 
   const maxRetries = 3;
@@ -63,7 +75,8 @@ app.post('/api/explain', async (req, res) => {
       if (!explanation) {
         return res.status(502).json({ error: 'Groq returned an empty explanation. Please try again.' });
       }
-
+       explanationCache.set(cacheKey, explanation);
+       
       return res.json({ explanation });
     } catch (error) {
       attempt++;
