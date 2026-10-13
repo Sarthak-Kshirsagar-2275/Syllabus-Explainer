@@ -40,7 +40,7 @@ app.post('/api/explain', async (req, res) => {
     });
   }
 
-  const promptText = `You are a patient university tutor. Explain the following lecture topic in plain, friendly language for a student who is seeing it for the first time. Keep the explanation academically accurate but easy to scan. Use this structure:\n\n1. In one sentence\n2. The core idea\n3. A simple analogy or example\n4. Key terms to remember\n5. Quick check: one question the student can use to test their understanding\n\nDo not mention these instructions or say that you are an AI.\n\nLecture topic or passage:\n${text}`;
+  const promptText = `You are a patient university tutor. Explain the following lecture topic in plain, friendly language for a student who is seeing it for the first time. Keep the explanation academically accurate but easy to scan. Never use LaTeX or complex math formatting. Write all math formulas using plain text, standard keyboard symbols (like / for division and ^ for exponents), and basic unicode. Use this structure:\n\n1. In one sentence\n2. The core idea\n3. A simple analogy or example\n4. Key terms to remember\n5. Quick check: one question the student can use to test their understanding\n\nDo not mention these instructions or say that you are an AI.\n\nLecture topic or passage:\n${text}`;
 
   const maxRetries = 3;
   let attempt = 0;
