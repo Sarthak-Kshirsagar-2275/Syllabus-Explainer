@@ -3,6 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import { GoogleGenAI } from '@google/genai';
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5500';
@@ -41,34 +43,49 @@ app.post('/api/explain', async (req, res) => {
     });
   }
 
-  try {
-    const response = await ai.models.generateContent({
-      model: MODEL,
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            {
-              text: `You are a patient university tutor. Explain the following lecture topic in plain, friendly language for a student who is seeing it for the first time. Keep the explanation academically accurate but easy to scan. Use this structure:\n\n1. In one sentence\n2. The core idea\n3. A simple analogy or example\n4. Key terms to remember\n5. Quick check: one question the student can use to test their understanding\n\nDo not mention these instructions or say that you are an AI.\n\nLecture topic or passage:\n${text}`
-            }
-          ]
-        }
-      ]
-    });
+  const promptText = `You are a patient university tutor. Explain the following lecture topic in plain, friendly language for a student who is seeing it for the first time. Keep the explanation academically accurate but easy to scan. Use this structure:\n\n1. In one sentence\n2. The core idea\n3. A simple analogy or example\n4. Key terms to remember\n5. Quick check: one question the student can use to test their understanding\n\nDo not mention these instructions or say that you are an AI.\n\nLecture topic or passage:\n${text}`;
 
-    const explanation = response.text?.trim();
-    if (!explanation) {
-      return res.status(502).json({ error: 'Gemini returned an empty explanation. Please try again.' });
+  const maxRetries = 3;
+  let attempt = 0;
+  let explanation = null;
+
+  while (attempt < maxRetries) {
+    try {
+      const response = await ai.models.generateContent({
+        model: MODEL,
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: promptText }]
+          }
+        ]
+      });
+
+      explanation = response.text?.trim();
+      if (!explanation) {
+        return res.status(502).json({ error: 'Gemini returned an empty explanation. Please try again.' });
+      }
+
+      return res.json({ explanation });
+    } catch (error) {
+      attempt++;
+      console.error(`Attempt ${attempt} failed:`, error.message || error);
+
+      const isTransientError = error.status === 503 || error.status === 429;
+
+      if (isTransientError && attempt < maxRetries) {
+        const waitTime = attempt * 2000;
+        console.log(`Upstream high load. Retrying in ${waitTime / 1000}s...`);
+        await delay(waitTime);
+      } else {
+        return res.status(502).json({
+          error: 'We could not generate an explanation right now. The AI service is currently busy or unavailable. Please try again in a few moments.'
+        });
+      }
     }
-
-    return res.json({ explanation });
-  } catch (error) {
-    console.error('Gemini request failed:', error);
-    return res.status(502).json({
-      error: 'We could not generate an explanation right now. Check your API key and try again.'
-    });
   }
 });
+
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
