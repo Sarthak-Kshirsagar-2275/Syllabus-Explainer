@@ -9,7 +9,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 8080;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5500';
 
-const MODEL = process.env.GROQ_MODEL || 'llama3.3-70b-versatile';
+const MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b';
 const hasGroqKey = Boolean(process.env.GROQ_API_KEY);
 
 app.use(cors({ origin: FRONTEND_ORIGIN }));
