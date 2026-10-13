@@ -58,8 +58,12 @@ function renderExplanation(text) {
 
 function formatExplanation(text) {
   return text
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .split('\n').map((line) => {
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\*\*/g, '')
+    .split('\n')
+    .map((line) => {
       const trimmed = line.trim();
       if (!trimmed) return '';
       if (/^\d+\.\s/.test(trimmed)) return `<h3>${trimmed.replace(/^\d+\.\s/, '')}</h3>`;
@@ -67,6 +71,7 @@ function formatExplanation(text) {
       return `<p>${trimmed}</p>`;
     }).join('');
 }
+
 
 function setLoading(isLoading) {
   explainButton.disabled = isLoading;
