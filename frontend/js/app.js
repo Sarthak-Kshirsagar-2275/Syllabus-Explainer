@@ -62,6 +62,8 @@ function formatExplanation(text) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/\*\*/g, '')
+    .replace(/\\\(/g, '')
+    .replace(/\$/g, '')
     .split('\n')
     .map((line) => {
       const trimmed = line.trim();
@@ -71,6 +73,7 @@ function formatExplanation(text) {
       return `<p>${trimmed}</p>`;
     }).join('');
 }
+
 
 
 function setLoading(isLoading) {
