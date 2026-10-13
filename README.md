@@ -7,8 +7,7 @@ A clean, student-friendly web app that turns confusing lecture topics into clear
 ```text
 syllabus-explainer/
 ├── backend/
-│   ├── .env                 # local secret configuration (do not commit)
-│   ├── .env.example
+│   ├── .env                 
 │   ├── .gitignore
 │   ├── package.json
 │   └── server.js
@@ -25,7 +24,6 @@ Requires Node.js 18+.
 ```bash
 cd syllabus-explainer/backend
 npm install
-# Edit backend/.env and replace your_gemini_api_key_here with your real key.
 npm run dev
 ```
 
