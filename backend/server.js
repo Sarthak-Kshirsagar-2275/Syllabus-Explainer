@@ -1,29 +1,26 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { GoogleGenAI } from '@google/genai';
+import Groq from 'groq-sdk';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5500';
-const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
-const hasGeminiKey = Boolean(
-  process.env.GEMINI_API_KEY && 
-  !process.env.GEMINI_API_KEY.includes('your_gemini_api_key_here')
-);
 
+const MODEL = process.env.GROQ_MODEL || 'llama3.3-70b-versatile';
+const hasGroqKey = Boolean(process.env.GROQ_API_KEY);
 
 app.use(cors({ origin: FRONTEND_ORIGIN }));
 app.use(express.json({ limit: '32kb' }));
 
-const ai = hasGeminiKey
-  ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
+const groq = hasGroqKey 
+  ? new Groq({ apiKey: process.env.GROQ_API_KEY }) 
   : null;
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, configured: Boolean(ai) });
+  res.json({ ok: true, configured: Boolean(groq) });
 });
 
 app.post('/api/explain', async (req, res) => {
@@ -37,9 +34,9 @@ app.post('/api/explain', async (req, res) => {
     return res.status(413).json({ error: 'Please keep your input under 12,000 characters.' });
   }
 
-  if (!ai) {
+  if (!groq) {
     return res.status(503).json({
-      error: 'The Gemini API is not configured yet. Add your API key to backend/.env and restart the server.'
+      error: 'The Groq API is not configured yet. Add your API key to backend/.env and restart the server.'
     });
   }
 
@@ -51,19 +48,20 @@ app.post('/api/explain', async (req, res) => {
 
   while (attempt < maxRetries) {
     try {
-      const response = await ai.models.generateContent({
+      const response = await groq.chat.completions.create({
         model: MODEL,
-        contents: [
+        messages: [
           {
             role: 'user',
-            parts: [{ text: promptText }]
+            content: promptText
           }
         ]
       });
 
-      explanation = response.text?.trim();
+      explanation = response.choices[0]?.message?.content?.trim();
+      
       if (!explanation) {
-        return res.status(502).json({ error: 'Gemini returned an empty explanation. Please try again.' });
+        return res.status(502).json({ error: 'Groq returned an empty explanation. Please try again.' });
       }
 
       return res.json({ explanation });
@@ -85,7 +83,6 @@ app.post('/api/explain', async (req, res) => {
     }
   }
 });
-
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' });
