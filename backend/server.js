@@ -7,7 +7,11 @@ const app = express();
 const PORT = Number(process.env.PORT) || 8080;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || 'http://localhost:5500';
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-const hasGeminiKey = Boolean(process.env.GEMINI_API_KEY && !process.env.GEMINI_API_KEY.includes('your_gemini_api_key_here'));
+const hasGeminiKey = Boolean(
+  process.env.GEMINI_API_KEY && 
+  !process.env.GEMINI_API_KEY.includes('your_gemini_api_key_here')
+);
+
 
 app.use(cors({ origin: FRONTEND_ORIGIN }));
 app.use(express.json({ limit: '32kb' }));
