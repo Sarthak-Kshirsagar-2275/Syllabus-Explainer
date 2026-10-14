@@ -68,7 +68,7 @@ app.post('/api/explain', async (req, res) => {
      4. Key terms to remember
      5. Quick check
      DO NOT use standard textbook formatting. Use basic markdown. NEVER use LaTeX or backslash-escaped math characters. Use plain text symbols (like != for not equal).
-  2. "spatial_flag": Output "sphere", "cube", "particles", or "according to the topic" based on the topic's physical geometry.
+  2. "spatial_flag": Output "sphere", "cube", "particles", or "none" based on the topic's physical geometry.
   
   Lecture topic:
   ${text}`;
