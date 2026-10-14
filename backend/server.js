@@ -58,14 +58,21 @@ app.post('/api/explain', async (req, res) => {
   console.log(`[REDIS MISS] Fetching from Groq for: ${cacheKey.substring(0, 20)}...`);
 
 
-  const promptText = `You are a patient university tutor. Explain the following lecture topic. 
+    const promptText = `You are a patient university tutor. Explain the following lecture topic. 
   
   You MUST return your response as a valid JSON object with EXACTLY two keys:
-  1. "explanation": The text explanation formatted with basic markdown (use 1. 2. 3. for lists).
-  2. "spatial_flag": Analyze the topic. If it is best visualized as a round 3D object (planets, atoms), output "sphere". If it is structural or mathematical (architecture, matrices), output "cube". If it is highly scattered (quantum fields, networks), output "particles". If it is purely abstract, output "none".
+  1. "explanation": The text explanation. You MUST strictly use this exact 5-point structure:
+     1. In one sentence
+     2. The core idea
+     3. A simple analogy or example
+     4. Key terms to remember
+     5. Quick check
+     DO NOT use standard textbook formatting. Use basic markdown. NEVER use LaTeX or backslash-escaped math characters. Use plain text symbols (like != for not equal).
+  2. "spatial_flag": Output "sphere", "cube", "particles", or "none" based on the topic's physical geometry.
   
   Lecture topic:
   ${text}`;
+
 
   let attempt = 0;
 
