@@ -41,7 +41,7 @@ app.post('/api/explain', async (req, res) => {
   }
 
  
-  const cacheKey = `explain-3d:${text.toLowerCase()}`;
+  const cacheKey = `explain-v2:${text.toLowerCase()}`;
 
   try {
     const cachedData = await redis.get(cacheKey);
